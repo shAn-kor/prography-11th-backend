@@ -27,7 +27,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public List<Member> findAll() { return jpaRepository.findAll(); }
     @Override
-    public Member save(Member member) { return jpaRepository.save(member); }
+    public Member save(Member member) { return jpaRepository.saveAndFlush(member); }
     @Override
     public void deleteById(Long id) { jpaRepository.deleteById(id); }
 }

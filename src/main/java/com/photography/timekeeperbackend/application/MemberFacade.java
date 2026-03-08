@@ -10,9 +10,11 @@ import com.photography.timekeeperbackend.domain.model.cohort.Team;
 import com.photography.timekeeperbackend.domain.model.member.CohortMember;
 import com.photography.timekeeperbackend.domain.model.member.Member;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class MemberFacade {
 
     private static final int INITIAL_DEPOSIT = 100000;

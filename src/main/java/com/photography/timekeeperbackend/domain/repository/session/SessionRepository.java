@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface SessionRepository {
     Optional<Session> findById(Long id);
+    Optional<Session> findByIdForUpdate(Long id);
     List<Session> findAll();
     List<Session> findAllByStatusNot(SessionStatus status);
     Session save(Session session);

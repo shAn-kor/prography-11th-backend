@@ -7,6 +7,7 @@ import com.photography.timekeeperbackend.domain.exception.ErrorCode;
 import com.photography.timekeeperbackend.domain.model.qrcode.QRCode;
 import com.photography.timekeeperbackend.domain.model.session.Session;
 import com.photography.timekeeperbackend.domain.repository.qrcode.QRCodeRepository;
+import com.photography.timekeeperbackend.domain.repository.session.SessionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +19,12 @@ import java.time.LocalDateTime;
 public class QRCodeService {
 
     private final QRCodeRepository qrCodeRepository;
+    private final SessionRepository sessionRepository;
 
     @Transactional
     public QRCodeDtos.Item create(QRCodeDtos.CreateCommand command) {
+        sessionRepository.findByIdForUpdate(command.session().getId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.SESSION_NOT_FOUND, "일정을 찾을 수 없습니다."));
         qrCodeRepository.findActiveBySessionId(command.session().getId(), LocalDateTime.now())
                 .ifPresent(existing -> {
                     throw new BusinessException(ErrorCode.QR_ALREADY_ACTIVE, "이미 활성화된 QR 코드가 존재합니다.");
@@ -44,6 +48,8 @@ public class QRCodeService {
     public QRCodeDtos.Item renew(QRCodeDtos.RenewCommand command) {
         QRCode current = qrCodeRepository.findById(command.qrCodeId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.QR_NOT_FOUND, "QR 코드를 찾을 수 없습니다."));
+        sessionRepository.findByIdForUpdate(current.getSessionId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.SESSION_NOT_FOUND, "일정을 찾을 수 없습니다."));
         current.expireNow(LocalDateTime.now());
         return new QRCodeDtos.Item(qrCodeRepository.save(QRCode.issue(current.getSessionId(), LocalDateTime.now())));
     }

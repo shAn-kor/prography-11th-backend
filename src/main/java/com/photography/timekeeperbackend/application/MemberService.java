@@ -9,6 +9,7 @@ import com.photography.timekeeperbackend.domain.model.member.Member;
 import com.photography.timekeeperbackend.domain.model.member.MemberRole;
 import com.photography.timekeeperbackend.domain.repository.member.CohortMemberRepository;
 import com.photography.timekeeperbackend.domain.repository.member.MemberRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,12 +52,12 @@ public class MemberService {
 
     @Transactional
     public MemberDtos.Item createMember(MemberDtos.CreateCommand command) {
-        if (memberRepository.existsByLoginId(command.loginId())) {
+        Member member = Member.create(command.loginId(), passwordEncoder.encode(command.rawPassword()), command.name(), MemberRole.USER);
+        try {
+            return new MemberDtos.Item(memberRepository.save(member));
+        } catch (DataIntegrityViolationException ex) {
             throw new BusinessException(ErrorCode.LOGIN_ID_DUPLICATED, "이미 사용 중인 loginId 입니다.");
         }
-
-        Member member = Member.create(command.loginId(), passwordEncoder.encode(command.rawPassword()), command.name(), MemberRole.USER);
-        return new MemberDtos.Item(memberRepository.save(member));
     }
 
     @Transactional

@@ -37,6 +37,10 @@ public class CohortMember {
     @Column(nullable = false)
     private int excuseCount;
 
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     protected CohortMember() {
     }
 

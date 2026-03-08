@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS cohort_member (
     team_id BIGINT,
     deposit INT NOT NULL,
     excuse_count INT NOT NULL,
+    version BIGINT NOT NULL DEFAULT 0,
     CONSTRAINT uk_member_cohort UNIQUE (member_id, cohort_id),
     CONSTRAINT fk_cohort_member_member FOREIGN KEY (member_id) REFERENCES `member`(id),
     CONSTRAINT fk_cohort_member_cohort FOREIGN KEY (cohort_id) REFERENCES cohort(id),

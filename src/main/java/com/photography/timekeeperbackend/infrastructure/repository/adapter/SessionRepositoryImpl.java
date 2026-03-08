@@ -22,6 +22,8 @@ public class SessionRepositoryImpl implements SessionRepository {
     @Override
     public Optional<Session> findById(Long id) { return jpaRepository.findById(id); }
     @Override
+    public Optional<Session> findByIdForUpdate(Long id) { return jpaRepository.findByIdForUpdate(id); }
+    @Override
     public List<Session> findAll() { return jpaRepository.findAll(); }
     @Override
     public List<Session> findAllByStatusNot(SessionStatus status) { return jpaRepository.findAllByStatusNot(status); }

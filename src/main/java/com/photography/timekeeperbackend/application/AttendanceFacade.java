@@ -13,9 +13,11 @@ import com.photography.timekeeperbackend.domain.model.member.Member;
 import com.photography.timekeeperbackend.domain.model.qrcode.QRCode;
 import com.photography.timekeeperbackend.domain.model.session.Session;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class AttendanceFacade {
 
     private final AttendanceService attendanceService;
@@ -33,7 +35,6 @@ public class AttendanceFacade {
         member.validateCanAttend();
 
         CohortMember cohortMember = memberService.findCohortMember(new MemberDtos.FindCohortMemberCommand(member.getId(), session.getCohort().getId())).cohortMember();
-        attendanceService.validateNotExists(new AttendanceDtos.ValidateNotExistsCommand(session.getId(), cohortMember.getId()));
 
         Attendance attendance = attendanceService.createByQr(new AttendanceDtos.CreateByQrCommand(session, cohortMember)).attendance();
         if (attendance.getPenaltyAmount() > 0) {
@@ -46,7 +47,6 @@ public class AttendanceFacade {
         Session session = sessionService.findById(new SessionDtos.FindByIdCommand(command.sessionId())).session();
         Member member = memberService.findById(new MemberDtos.FindByIdCommand(command.memberId())).member();
         CohortMember cohortMember = memberService.findCohortMember(new MemberDtos.FindCohortMemberCommand(member.getId(), session.getCohort().getId())).cohortMember();
-        attendanceService.validateNotExists(new AttendanceDtos.ValidateNotExistsCommand(command.sessionId(), cohortMember.getId()));
 
         Attendance attendance = attendanceService.createManual(new AttendanceDtos.CreateManualCommand(session, cohortMember, command.status())).attendance();
         if (attendance.getPenaltyAmount() > 0) {

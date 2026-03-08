@@ -29,7 +29,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
     @Override
     public List<Attendance> findAllBySessionId(Long sessionId) { return jpaRepository.findAllBySessionId(sessionId); }
     @Override
-    public Attendance save(Attendance attendance) { return jpaRepository.save(attendance); }
+    public Attendance save(Attendance attendance) { return jpaRepository.saveAndFlush(attendance); }
     @Override
     public void deleteById(Long id) { jpaRepository.deleteById(id); }
 }

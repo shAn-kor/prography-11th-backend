@@ -7,9 +7,11 @@ import lombok.RequiredArgsConstructor;
 import com.photography.timekeeperbackend.domain.model.qrcode.QRCode;
 import com.photography.timekeeperbackend.domain.model.session.Session;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class SessionFacade {
 
     private final SessionService sessionService;

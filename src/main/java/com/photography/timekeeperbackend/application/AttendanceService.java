@@ -11,6 +11,7 @@ import com.photography.timekeeperbackend.domain.model.member.CohortMember;
 import com.photography.timekeeperbackend.domain.model.member.CohortMemberDomainService;
 import com.photography.timekeeperbackend.domain.model.session.Session;
 import com.photography.timekeeperbackend.domain.repository.attendance.AttendanceRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +51,11 @@ public class AttendanceService {
                 command.cohortMember().getId(),
                 command.session().getSessionDate()
         );
-        return new AttendanceDtos.Item(attendanceRepository.save(attendance));
+        try {
+            return new AttendanceDtos.Item(attendanceRepository.save(attendance));
+        } catch (DataIntegrityViolationException ex) {
+            throw new BusinessException(ErrorCode.ATTENDANCE_ALREADY_CHECKED, "이미 출석 체크가 완료되었습니다.");
+        }
     }
 
     @Transactional
@@ -61,7 +66,11 @@ public class AttendanceService {
                 command.cohortMember().getId(),
                 command.status()
         );
-        return new AttendanceDtos.Item(attendanceRepository.save(attendance));
+        try {
+            return new AttendanceDtos.Item(attendanceRepository.save(attendance));
+        } catch (DataIntegrityViolationException ex) {
+            throw new BusinessException(ErrorCode.ATTENDANCE_ALREADY_CHECKED, "이미 출석 체크가 완료되었습니다.");
+        }
     }
 
     @Transactional
